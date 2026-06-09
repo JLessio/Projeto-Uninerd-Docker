@@ -1,0 +1,75 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: uninerd-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/criacao.sql:/docker-entrypoint-initdb.d/01-criacao.sql:ro
+    networks:
+      - database-net
+
+  backend:
+    build:
+      context: ./backend
+    container_name: uninerd-api
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      PORT: 3001
+    expose:
+      - "3001"
+    depends_on:
+      - db
+    networks:
+      - app-net
+      - database-net
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-/api}
+    container_name: uninerd-web
+    restart: unless-stopped
+    expose:
+      - "3000"
+    depends_on:
+      - backend
+    networks:
+      - app-net
+
+  nginx:
+    image: nginx:alpine
+    container_name: uninerd-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infra/certs:/etc/nginx/certs:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge
+  database-net:
+    driver: bridge
+    internal: true
+
+volumes:
+  mysql_data:
