@@ -1,0 +1,21 @@
+{
+  "name": "projeto-uninerd",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "prepare": "husky install",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs --follow",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test:e2e": "npm run cypress:run"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
+    "cypress": "^13.5.0",
+    "husky": "^9.1.7"
+  }
+}
