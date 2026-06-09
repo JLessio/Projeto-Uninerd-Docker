@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  /* No v4, definimos as cores assim para o Tailwind mapear corretamente */
+  --color-med-blue: #004a8c;
+  --color-med-bg: #f0f4f8;
+}
+
+body {
+  /* Tente usar o nome completo da variável se o atalho falhar */
+  @apply bg-[--color-med-bg]; 
+} 
