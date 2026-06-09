@@ -1,0 +1,17 @@
+.env
+.env.local
+node_modules/
+*.log
+.DS_Store
+/dist
+/out
+/.vite
+**/.vite/
+/.idea
+.vscode/
+cypress/screenshots/
+cypress/videos/
+backend/dist/
+frontend/dist/
+infra/certs/*.pem
+!infra/certs/.gitkeep
